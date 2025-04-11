@@ -312,14 +312,14 @@ def load_certificate():
     """
     db_uuid = read_file_first_line('odoo-db-uuid.conf')
     enterprise_code = read_file_first_line('odoo-enterprise-code.conf')
-    if not (db_uuid and enterprise_code):
+    if not db_uuid:
         return "ERR_IOT_HTTPS_LOAD_NO_CREDENTIAL"
 
     url = 'https://www.odoo.com/odoo-enterprise/iot/x509'
     data = {
         'params': {
             'db_uuid': db_uuid,
-            'enterprise_code': enterprise_code
+            'enterprise_code': enterprise_code or ''
         }
     }
     urllib3.disable_warnings()
@@ -338,9 +338,13 @@ def load_certificate():
     if response.status != 200:
         return "ERR_IOT_HTTPS_LOAD_REQUEST_STATUS %s\n\n%s" % (response.status, response.reason)
 
-    result = json.loads(response.data.decode('utf8'))['result']
-    if not result:
+    response = json.loads(response.data.decode('utf8'))
+    error = response.get('error')
+    if error or not response.get('data') or not json.loads(response.data.decode('utf8')).get('result'):
+        _logger.warning("An error received from odoo.com while trying to get the certificate: %s", error or 'Empty response')
         return "ERR_IOT_HTTPS_LOAD_REQUEST_NO_RESULT"
+
+    result = json.loads(response.data.decode('utf8'))['result']
 
     write_file('odoo-subject.conf', result['subject_cn'])
     if platform.system() == 'Linux':
