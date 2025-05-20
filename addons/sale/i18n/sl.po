@@ -1820,7 +1820,7 @@ msgstr "Bodoče aktivnosti"
 #. module: sale
 #: model:ir.model,name:sale.model_payment_link_wizard
 msgid "Generate Sales Payment Link"
-msgstr ""
+msgstr "Ustvari povezavo za plačilo prodaje"
 
 #. module: sale
 #: model:ir.actions.act_window,name:sale.action_sale_order_generate_link
@@ -4093,7 +4093,7 @@ msgstr ""
 #: code:addons/sale/controllers/portal.py:0
 #, python-format
 msgid "The provided parameters are invalid."
-msgstr ""
+msgstr "Navedeni parametri so neveljavni."
 
 #. module: sale
 #. odoo-python
